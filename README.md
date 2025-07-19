@@ -34,19 +34,18 @@ my_crate/
 name = "my_crate"
 version = "0.1.0"
 edition = "2021"
-authors = ["Your Name <you@example.com>"]
-description = "Short description of what this crate does"
+authors = ["Diogo Ribeiro <dfr@esmad.ipp.pt>"]
+description = "An example crate showcasing CI, tests and benchmarks"
 license = "MIT OR Apache-2.0"
-repository = "https://github.com/yourusername/my_crate"
+repository = "https://github.com/DiogoRibeiro7/my_crate"
 readme = "README.md"
-keywords = ["your", "tags", "here"]
+keywords = ["example", "hello-world", "ci"]
 categories = ["command-line-utilities", "data-structures"]
 documentation = "https://docs.rs/my_crate"
-homepage = "https://github.com/yourusername/my_crate"
+homepage = "https://github.com/DiogoRibeiro7/my_crate"
 exclude = ["/target"]
 
 [dependencies]
-# your dependencies here
 ```
 
 ---
@@ -58,9 +57,9 @@ exclude = ["/target"]
 //!
 //! Welcome to the documentation of `my_crate`.
 
-/// Say hello to the world!
-pub fn hello() {
-    println!("Hello, world!");
+/// Return a greeting message.
+pub fn hello() -> &'static str {
+    "Hello, world!"
 }
 ```
 
@@ -73,7 +72,7 @@ use my_crate::hello;
 
 #[test]
 fn it_says_hello() {
-    hello();
+    assert_eq!(hello(), "Hello, world!");
 }
 ```
 
@@ -87,7 +86,7 @@ Add to `examples/hello.rs`:
 use my_crate::hello;
 
 fn main() {
-    hello();
+    println!("{}", hello());
 }
 ```
 
@@ -97,6 +96,18 @@ Run with:
 cargo run --example hello
 ```
 
+Another example in `examples/greeting.rs` demonstrates how to manipulate the
+returned greeting:
+
+```rust
+use my_crate::hello;
+
+fn main() {
+    let greet = hello();
+    println!("Custom: {}", greet.to_uppercase());
+}
+```
+
 ---
 
 ## 🏁 Benchmarks (Optional, requires `criterion`)
@@ -104,10 +115,11 @@ cargo run --example hello
 Example in `benches/benchmark.rs`:
 
 ```rust
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{criterion_group, criterion_main, Criterion, black_box};
+use my_crate::hello;
 
 fn bench_hello(c: &mut Criterion) {
-    c.bench_function("hello", |b| b.iter(|| println!("Hello, world!")));
+    c.bench_function("hello", |b| b.iter(|| black_box(hello())));
 }
 
 criterion_group!(benches, bench_hello);
